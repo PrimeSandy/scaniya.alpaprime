@@ -87,6 +87,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     // }
 
     Object.assign(qr, validatedData);
+    
+    // Mongoose needs explicit notification for Mixed types or nested objects
+    // modified via Object.assign to guarantee they are saved correctly.
+    qr.markModified("content");
+    qr.markModified("design");
+    
     await qr.save();
 
     return NextResponse.json(qr);
