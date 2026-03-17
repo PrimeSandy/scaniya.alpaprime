@@ -167,13 +167,13 @@ export default function EditPage() {
                 {qrType === "link" && (
                   <div className="space-y-2">
                     <Label>Destination URL</Label>
-                    <Input type="url" placeholder="https://example.com" value={content.url || ""} onChange={(e) => setContent({ url: e.target.value })} />
+                    <Input type="url" placeholder="https://example.com" value={content.url || ""} onChange={(e) => setContent({ ...content, url: e.target.value })} />
                   </div>
                 )}
                 {qrType === "text" && (
                   <div className="space-y-2">
                     <Label>Message</Label>
-                    <Textarea placeholder="Your message..." value={content.body || ""} onChange={(e) => setContent({ body: e.target.value })} rows={4} />
+                    <Textarea placeholder="Your message..." value={content.body || ""} onChange={(e) => setContent({ ...content, body: e.target.value })} rows={4} />
                   </div>
                 )}
                 {qrType === "image" && (
