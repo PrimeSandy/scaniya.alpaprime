@@ -4,6 +4,8 @@ import { dbConnect } from "@/lib/mongodb";
 import { QRCode } from "@/models/QRCode";
 import { User } from "@/models/User";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const session = await auth();
