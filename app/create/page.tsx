@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Loader2, Download, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Download, Save, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = ["Type", "Design", "Preview & Save"];
@@ -40,7 +40,17 @@ export default function CreatePage() {
   const [actions, setActions] = useState<Action[]>([
     { label: "Visit Website", type: "link", value: "" },
   ]);
-  const [design, setDesign] = useState({ size: 300, fgColor: "#000000", bgColor: "#ffffff", logoUrl: "" });
+  const [design, setDesign] = useState({
+    size: 300,
+    fgColor: "#6c63ff",
+    bgColor: "#ffffff",
+    logoUrl: "",
+    overlayType: "none" as "none" | "text" | "image",
+    centerText: "S",
+    centerTextColor: "#6c63ff",
+    centerShape: "square" as "square" | "circle" | "rounded",
+    centerSize: 22,
+  });
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -272,19 +282,39 @@ export default function CreatePage() {
 
           {/* Live Preview */}
           <div className="lg:col-span-1">
-            <Card className="p-6 border border-border/50 sticky top-24">
-              <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
-              <div id="qr-preview-create">
-                <QRPreview
-                  ref={qrRef}
-                  value={qrValue}
-                  size={Math.min(design.size, 260)}
-                  fgColor={design.fgColor}
-                  bgColor={design.bgColor}
-                  logoUrl={design.logoUrl}
-                />
-              </div>
-            </Card>
+            <div className="sticky top-24 space-y-6">
+              <Card className="p-6 border border-border/50 bg-card/50 backdrop-blur-sm">
+                <h3 className="text-xs font-semibold mb-6 text-muted-foreground uppercase tracking-widest text-center">Live Preview</h3>
+                <div id="qr-preview-create" className="flex justify-center">
+                  <QRPreview
+                    ref={qrRef}
+                    value={qrValue}
+                    size={Math.min(design.size, 260)}
+                    fgColor={design.fgColor}
+                    bgColor={design.bgColor}
+                    logoUrl={design.logoUrl}
+                    overlayType={design.overlayType}
+                    centerText={design.centerText}
+                    centerTextColor={design.centerTextColor}
+                    centerShape={design.centerShape}
+                    centerSize={design.centerSize}
+                  />
+                </div>
+              </Card>
+
+              {/* Quick Info Card */}
+              <Card className="p-4 border border-border/50 bg-primary/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <LayoutGrid className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold">Dynamic Engine</p>
+                    <p className="text-[10px] text-muted-foreground">Changes reflect instantly without reprinting.</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </main>

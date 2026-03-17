@@ -28,7 +28,17 @@ export default function EditPage() {
   const [content, setContent] = useState<any>({});
   const [multiTitle, setMultiTitle] = useState("Choose an option");
   const [actions, setActions] = useState<Action[]>([]);
-  const [design, setDesign] = useState({ size: 300, fgColor: "#000000", bgColor: "#ffffff", logoUrl: "" });
+  const [design, setDesign] = useState({
+    size: 300,
+    fgColor: "#6c63ff",
+    bgColor: "#ffffff",
+    logoUrl: "",
+    overlayType: "none" as "none" | "text" | "image",
+    centerText: "S",
+    centerTextColor: "#6c63ff",
+    centerShape: "square" as "square" | "circle" | "rounded",
+    centerSize: 22,
+  });
   const [name, setName] = useState("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
@@ -53,7 +63,18 @@ export default function EditPage() {
       const data = await res.json();
       setQrType(data.type);
       setName(data.name);
-      setDesign(data.design || { size: 300, fgColor: "#000000", bgColor: "#ffffff" });
+      setDesign({
+        size: 300,
+        fgColor: "#6c63ff",
+        bgColor: "#ffffff",
+        logoUrl: "",
+        overlayType: "none",
+        centerText: "S",
+        centerTextColor: "#6c63ff",
+        centerShape: "square",
+        centerSize: 22,
+        ...data.design,
+      });
       setUpdatedAt(data.updatedAt || data.createdAt);
       if (data.type === "multi") {
         setMultiTitle(data.content?.title || "Choose an option");
@@ -211,13 +232,20 @@ export default function EditPage() {
           <div>
             <Card className="p-6 border border-border/50 sticky top-24">
               <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
-              <QRPreview
-                value={qrValue}
-                size={Math.min(design.size, 260)}
-                fgColor={design.fgColor}
-                bgColor={design.bgColor}
-                logoUrl={design.logoUrl}
-              />
+              <div className="flex justify-center">
+                <QRPreview
+                  value={qrValue}
+                  size={Math.min(design.size, 260)}
+                  fgColor={design.fgColor}
+                  bgColor={design.bgColor}
+                  logoUrl={design.logoUrl}
+                  overlayType={design.overlayType}
+                  centerText={design.centerText}
+                  centerTextColor={design.centerTextColor}
+                  centerShape={design.centerShape}
+                  centerSize={design.centerSize}
+                />
+              </div>
             </Card>
           </div>
         </div>
