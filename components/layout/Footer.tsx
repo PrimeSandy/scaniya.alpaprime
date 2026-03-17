@@ -43,9 +43,9 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-4 text-foreground">Company</h4>
             <ul className="space-y-2">
               {[
-                { label: "Privacy Policy", href: "#" },
-                { label: "Terms of Service", href: "#" },
-                { label: "Support", href: "#" },
+                { label: "Privacy Policy", href: "/privacy-policy" },
+                { label: "Terms of Service", href: "/terms-of-service" },
+                { label: "Support", href: "mailto:alphaprime.co.in@gmail.com" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors">

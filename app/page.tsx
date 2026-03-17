@@ -18,7 +18,18 @@ import {
   LayoutGrid,
   ArrowRight,
   Sparkles,
+  Mail,
+  Send,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export default function HomePage() {
   return (
@@ -216,9 +227,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4 max-w-4xl">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-bold mb-3">Simple pricing</h2>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-lg mb-6">
                 Start free. Upgrade when you need more.
               </p>
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-medium border border-primary/20">
+                <Sparkles className="w-3.5 h-3.5" />
+                Pro plans are coming soon 🚀 — enter your email to get notified at launch
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
@@ -282,10 +297,37 @@ export default function HomePage() {
                   ))}
                 </ul>
 
-                <Button className="w-full gradient-primary text-white border-0 shadow-lg shadow-primary/30">
-                  Upgrade to Pro
-                </Button>
-              </div>
+                  {/* Coming soon button replacement */}
+                  <div className="flex flex-col gap-3 mt-8">
+                    <div className="w-full text-center py-2.5 rounded-lg bg-muted text-muted-foreground font-medium text-sm border border-border/50 cursor-not-allowed select-none">
+                      Coming Soon
+                    </div>
+                    
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="w-full gap-2 border-primary/20 hover:border-primary/50 text-foreground">
+                          <Mail className="w-4 h-4" />
+                          Notify Me
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Get Notified</DialogTitle>
+                          <DialogDescription>
+                            Enter your email to join the waitlist. We'll let you know as soon as the Pro plan launches!
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex items-center space-x-2 mt-4">
+                          <Input type="email" placeholder="you@example.com" />
+                          <Button type="button" className="gradient-primary text-white border-0 px-4">
+                            <Send className="w-4 h-4 mr-2" />
+                            Submit
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
             </div>
           </div>
         </section>
