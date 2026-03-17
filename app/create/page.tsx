@@ -1,11 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { TypeSelector, QRType } from "@/components/create/TypeSelector";
 import { DesignCustomizer } from "@/components/create/DesignCustomizer";
-import { QRPreview } from "@/components/create/QRPreview";
+import { QRPreview, QRPreviewRef } from "@/components/create/QRPreview";
 import { MultiActionBuilder, Action } from "@/components/create/MultiActionBuilder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,7 @@ export default function CreatePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { toast } = useToast();
+  const qrRef = useRef<QRPreviewRef>(null);
 
   const [step, setStep] = useState(0);
   const [qrType, setQrType] = useState<QRType>("link");
@@ -86,12 +87,8 @@ export default function CreatePage() {
   };
 
   const handleDownloadFromCreate = () => {
-    const canvas = document.querySelector("#qr-preview-create canvas") as HTMLCanvasElement;
-    if (canvas) {
-      const a = document.createElement("a");
-      a.download = `${name || "qrcode"}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
+    if (qrRef.current) {
+      qrRef.current.download(name || "qrcode");
     }
   };
 
@@ -279,6 +276,7 @@ export default function CreatePage() {
               <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
               <div id="qr-preview-create">
                 <QRPreview
+                  ref={qrRef}
                   value={qrValue}
                   size={Math.min(design.size, 260)}
                   fgColor={design.fgColor}

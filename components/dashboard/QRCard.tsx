@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import QRCodeStyling from "qr-code-styling";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +40,7 @@ interface QRCardProps {
     scanCount: number;
     isActive: boolean;
     createdAt: string;
-    design: { size: number; fgColor: string; bgColor: string };
+    design: { size: number; fgColor: string; bgColor: string; logoUrl?: string };
   };
   onDelete: (id: string) => void;
 }
@@ -66,22 +67,19 @@ export function QRCard({ qr, onDelete }: QRCardProps) {
   };
 
   const handleDownload = () => {
-    const svg = document.querySelector(`#qr-preview-${qr._id} svg`) as SVGSVGElement | null;
-    if (!svg) return;
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new globalThis.Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-      const a = document.createElement("a");
-      a.download = `${qr.name}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
-    };
-    img.src = "data:image/svg+xml;base64," + btoa(svgData);
+    // We generate it on the fly using the library to ensure clean, high-res downloads
+    const qrStyling = new QRCodeStyling({
+      width: 500,
+      height: 500,
+      data: scanUrl,
+      dotsOptions: { color: qr.design.fgColor, type: "rounded" },
+      backgroundOptions: { color: qr.design.bgColor },
+      cornersSquareOptions: { type: "extra-rounded", color: qr.design.fgColor },
+      cornersDotOptions: { type: "dot", color: qr.design.fgColor },
+      ...(qr.design.logoUrl ? { image: qr.design.logoUrl, imageOptions: { crossOrigin: "anonymous", margin: 4 } } : {}),
+    });
+
+    qrStyling.download({ name: qr.name || "qrcode", extension: "png" });
   };
 
   const handleDelete = async () => {
