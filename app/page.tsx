@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -31,9 +32,52 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Generate dynamic, custom QR codes with logo support for free. Scaniya is the leading platform for trackable QR codes, dynamic links, and real-time scan analytics.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default function HomePage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://scaniya.alphaprime.co.in/#website",
+        "url": "https://scaniya.alphaprime.co.in",
+        "name": "Scaniya",
+        "description": "Dynamic QR Code Platform",
+        "publisher": {
+          "@id": "https://scaniya.alphaprime.co.in/#organization"
+        }
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Scaniya QR Generator",
+        "description": "Create, customize, and track dynamic QR codes with logo support and real-time analytics.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "url": "https://scaniya.alphaprime.co.in",
+        "featureList": [
+          "Dynamic QR Codes",
+          "Custom Design with Logo",
+          "Scan Analytics",
+          "Multi-Action Pages"
+        ]
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main>
         {/* ===== HERO ===== */}
@@ -66,13 +110,14 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   className="gradient-primary text-white border-0 gap-2 text-base px-8 h-12 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-shadow"
+                  aria-label="Get Started for Free"
                 >
                   Get Started Free
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
               <Link href="/#how-it-works">
-                <Button variant="outline" size="lg" className="gap-2 h-12 px-8 text-base">
+                <Button variant="outline" size="lg" className="gap-2 h-12 px-8 text-base" aria-label="Learn how it works">
                   How it works
                 </Button>
               </Link>
@@ -262,7 +307,7 @@ export default function HomePage() {
                 </ul>
 
                 <Link href="/login">
-                  <Button className="w-full" variant="outline">
+                  <Button className="w-full" variant="outline" aria-label="Sign up for Free plan">
                     Get Started Free
                   </Button>
                 </Link>
@@ -305,7 +350,7 @@ export default function HomePage() {
                     
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" className="w-full gap-2 border-primary/20 hover:border-primary/50 text-foreground">
+                        <Button variant="outline" className="w-full gap-2 border-primary/20 hover:border-primary/50 text-foreground" aria-label="Notify me when Pro plan launches">
                           <Mail className="w-4 h-4" />
                           Notify Me
                         </Button>
@@ -351,6 +396,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 className="gradient-primary text-white border-0 gap-2 px-10 h-12 text-base shadow-lg shadow-primary/30"
+                aria-label="Start creating your first QR for free"
               >
                 <QrCode className="w-5 h-5" />
                 Start for Free

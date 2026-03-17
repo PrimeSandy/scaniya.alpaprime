@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { QrCode, Link2, FileText, Image, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { QrCode, Link2, FileText, Image as ImageIcon, ExternalLink } from "lucide-react";
 
 interface Action {
   label: string;
@@ -25,7 +26,7 @@ export function MultiPage({ title, actions, qrName }: MultiPageProps) {
     }
   };
 
-  const iconMap = { link: Link2, text: FileText, image: Image };
+  const iconMap = { link: Link2, text: FileText, image: ImageIcon };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-violet-950 to-slate-900 flex flex-col items-center justify-center p-6">
@@ -77,11 +78,15 @@ export function MultiPage({ title, actions, qrName }: MultiPageProps) {
             {modal.type === "text" ? (
               <p className="text-white leading-relaxed whitespace-pre-wrap">{modal.value}</p>
             ) : (
-              <img
-                src={modal.value}
-                alt="Content"
-                className="w-full rounded-xl object-contain max-h-[60vh]"
-              />
+              <div className="relative w-full rounded-xl overflow-hidden" style={{ aspectRatio: "1/1" }}>
+                <Image
+                  src={modal.value}
+                  alt="Content"
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
             )}
             <button
               className="mt-4 text-white/60 text-sm hover:text-white"

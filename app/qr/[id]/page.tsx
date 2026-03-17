@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import { dbConnect } from "@/lib/mongodb";
 import { QRCode } from "@/models/QRCode";
@@ -12,6 +13,26 @@ export const dynamic = "force-dynamic";
 async function getQR(id: string) {
   await dbConnect();
   return QRCode.findOne({ uniqueId: id, isActive: true }).lean();
+}
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const qr = (await getQR(params.id)) as any;
+  if (!qr) return { title: "Not Found" };
+
+  let description = "Powered by Scaniya";
+  if (qr.type === "text") description = qr.content?.body?.substring(0, 150) || description;
+  if (qr.type === "image") description = qr.content?.caption || "View image on Scaniya";
+  if (qr.type === "multi") description = qr.content?.title || "Choose an option";
+
+  return {
+    title: qr.name,
+    description,
+    openGraph: {
+      title: qr.name,
+      description,
+      type: "website",
+    },
+  };
 }
 
 export default async function ScanPage({

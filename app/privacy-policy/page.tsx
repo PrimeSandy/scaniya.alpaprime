@@ -1,9 +1,41 @@
+import { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Learn how Scaniya collects, uses, and protects your data. Read our comprehensive Privacy Policy.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
+};
+
 export default function PrivacyPolicyPage() {
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scaniya.alphaprime.co.in"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Privacy Policy",
+        "item": "https://scaniya.alphaprime.co.in/privacy-policy"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-16 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none">

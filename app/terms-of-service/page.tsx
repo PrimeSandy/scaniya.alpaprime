@@ -1,9 +1,41 @@
+import { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Review the Terms of Service for using Scaniya. Understand your rights and responsibilities when using our dynamic QR code platform.",
+  alternates: {
+    canonical: "/terms-of-service",
+  },
+};
+
 export default function TermsOfServicePage() {
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://scaniya.alphaprime.co.in"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Terms of Service",
+        "item": "https://scaniya.alphaprime.co.in/terms-of-service"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-16 max-w-4xl">
         <div className="prose prose-slate dark:prose-invert max-w-none">

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import QRCodeStyling from "qr-code-styling";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
@@ -15,7 +16,7 @@ import {
   Calendar,
   Link2,
   FileText,
-  Image,
+  Image as ImageIcon,
   LayoutGrid,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -239,13 +240,13 @@ function QRCodeMini({
       : `/qr/${uniqueId}`;
 
   return (
-    <img
+    <Image
       src={`https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(url)}&color=${fgColor.replace("#", "")}&bgcolor=${bgColor.replace("#", "")}&qzone=1`}
       alt="QR Code"
       width={size}
       height={size}
       className="rounded"
-      loading="lazy"
+      unoptimized
     />
   );
 }

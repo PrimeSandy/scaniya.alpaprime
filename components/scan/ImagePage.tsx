@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { QrCode } from "lucide-react";
 
 interface ImagePageProps {
@@ -11,11 +12,16 @@ export function ImagePage({ url, caption, qrName }: ImagePageProps) {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center">
       <div className="w-full max-w-2xl px-4">
-        <img
-          src={url}
-          alt={caption || qrName}
-          className="w-full rounded-2xl object-contain max-h-[75vh] shadow-2xl"
-        />
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl" style={{ aspectRatio: "1/1" }}>
+          <Image
+            src={url}
+            alt={caption || qrName}
+            fill
+            className="object-contain"
+            priority
+            unoptimized
+          />
+        </div>
         {caption && (
           <p className="text-white/70 text-center mt-4 text-sm">{caption}</p>
         )}

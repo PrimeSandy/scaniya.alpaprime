@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4" aria-label="Scaniya Homepage">
               <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
                 <QrCode className="w-4 h-4 text-white" />
               </div>
@@ -30,7 +30,7 @@ export function Footer() {
                 { label: "Pricing", href: "/#pricing" },
               ].map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+                  <Link href={item.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors" aria-label={`Go to ${item.label}`}>
                     {item.label}
                   </Link>
                 </li>
@@ -48,7 +48,7 @@ export function Footer() {
                 { label: "Support", href: "mailto:alphaprime.co.in@gmail.com" },
               ].map((item) => (
                 <li key={item.label}>
-                  <Link href={item.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+                  <Link href={item.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors" aria-label={`Read our ${item.label}`}>
                     {item.label}
                   </Link>
                 </li>

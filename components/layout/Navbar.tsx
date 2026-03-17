@@ -20,7 +20,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group" aria-label="Scaniya Homepage">
           <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center transition-transform group-hover:scale-110">
             <QrCode className="w-4 h-4 text-white" />
           </div>
@@ -62,7 +62,7 @@ export function Navbar() {
         {session?.user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary">
+              <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary" aria-label="Open User Menu">
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={session.user.image ?? ""} alt={session.user.name ?? ""} />
                   <AvatarFallback className="gradient-primary text-white text-xs font-bold">

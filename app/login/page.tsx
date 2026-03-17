@@ -4,7 +4,10 @@ import { LoginCard } from "./LoginCard";
 
 export const metadata = {
   title: "Sign In — Scaniya",
-  description: "Sign in to your Scaniya account",
+  description: "Sign in to your Scaniya account to manage your dynamic QR codes and view real-time scan analytics.",
+  alternates: {
+    canonical: "/login",
+  },
 };
 
 export default async function LoginPage() {
