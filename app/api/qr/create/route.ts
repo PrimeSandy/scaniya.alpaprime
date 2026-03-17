@@ -42,10 +42,10 @@ export async function POST(req: Request) {
     const payload = await req.json();
     const validatedData = createSchema.parse(payload);
 
-    // If free plan, remove logo if any provided
-    if (user.plan === "free" && validatedData.design.logoUrl) {
-      validatedData.design.logoUrl = undefined;
-    }
+    // If free plan, remove logo if any provided (Currently allowing for all)
+    // if (user.plan === "free" && validatedData.design.logoUrl) {
+    //   validatedData.design.logoUrl = undefined;
+    // }
 
     const uniqueId = generateId();
 

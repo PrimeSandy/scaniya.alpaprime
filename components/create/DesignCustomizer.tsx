@@ -2,7 +2,8 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { ProLock } from "@/components/shared/ProLock";
+import { Badge } from "@/components/ui/badge";
+import { Unlock } from "lucide-react";
 
 interface DesignCustomizerProps {
   design: {
@@ -70,30 +71,25 @@ export function DesignCustomizer({ design, onChange, isPro }: DesignCustomizerPr
         </div>
       </div>
 
-      {/* Logo URL (Pro only) */}
+      {/* Logo URL (Currently Free for all) */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <Label className="text-sm font-medium">Logo URL</Label>
-          {!isPro && <ProLock />}
+          {!isPro && (
+            <Badge className="bg-gradient-to-r from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white border-0 gap-1 text-xs font-semibold">
+              <Unlock className="w-3 h-3" />
+              Now Free
+            </Badge>
+          )}
         </div>
         <div className="relative">
           <Input
             type="url"
             placeholder="https://example.com/logo.png"
             value={design.logoUrl ?? ""}
-            onChange={(e) => isPro && update("logoUrl", e.target.value)}
-            disabled={!isPro}
-            className={!isPro ? "opacity-50 cursor-not-allowed" : ""}
+            onChange={(e) => update("logoUrl", e.target.value)}
           />
-          {!isPro && (
-            <div className="absolute inset-0 rounded-md bg-muted/30 cursor-not-allowed" />
-          )}
         </div>
-        {!isPro && (
-          <p className="text-xs text-muted-foreground">
-            Upgrade to Pro to embed a logo in your QR code.
-          </p>
-        )}
       </div>
     </div>
   );

@@ -216,7 +216,7 @@ export default function EditPage() {
                 size={Math.min(design.size, 260)}
                 fgColor={design.fgColor}
                 bgColor={design.bgColor}
-                logoUrl={isPro ? design.logoUrl : undefined}
+                logoUrl={design.logoUrl}
               />
             </Card>
           </div>

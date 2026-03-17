@@ -283,7 +283,7 @@ export default function CreatePage() {
                   size={Math.min(design.size, 260)}
                   fgColor={design.fgColor}
                   bgColor={design.bgColor}
-                  logoUrl={isPro ? design.logoUrl : undefined}
+                  logoUrl={design.logoUrl}
                 />
               </div>
             </Card>

@@ -81,9 +81,10 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const body = await req.json();
     const validatedData = updateSchema.parse(body);
 
-    if (user.plan === "free" && validatedData.design?.logoUrl) {
-      validatedData.design.logoUrl = undefined;
-    }
+    // Removed restriction initially locking logoUrl to Pro plan
+    // if (user.plan === "free" && validatedData.design?.logoUrl) {
+    //   validatedData.design.logoUrl = undefined;
+    // }
 
     Object.assign(qr, validatedData);
     await qr.save();
