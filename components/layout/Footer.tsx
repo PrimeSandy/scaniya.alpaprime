@@ -14,6 +14,7 @@ export function Footer() {
                 <QrCode className="w-4 h-4 text-white" />
               </div>
               <span className="text-xl font-bold gradient-text">Scaniya</span>
+              <span className="text-xs text-muted-foreground font-medium ml-1">by AlphaPrime</span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
               One Scan, Infinite Possibilities. Create dynamic QR codes that update anytime — no reprinting needed.

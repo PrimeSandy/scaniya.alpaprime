@@ -121,7 +121,7 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center max-w-4xl">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-medium mb-6 border border-primary/20 animate-fade-in">
               <Sparkles className="w-3.5 h-3.5" />
-              Dynamic QR Codes — No reprinting ever
+              Scaniya by AlphaPrime — Dynamic QR Codes
             </div>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 animate-slide-up">
