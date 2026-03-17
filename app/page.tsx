@@ -21,6 +21,7 @@ import {
   Sparkles,
   Mail,
   Send,
+  HelpCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -67,6 +68,35 @@ export default function HomePage() {
           "Custom Design with Logo",
           "Scan Analytics",
           "Multi-Action Pages"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Scaniya a free QR code generator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Scaniya offers a forever-free plan that includes 2 dynamic QR codes with unlimited scans and basic customization."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do dynamic QR codes work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Unlike static QR codes, dynamic QR codes from Scaniya point to a short URL that redirects to your destination. This allows you to change the destination URL anytime without reprinting the QR code."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I add a logo to my QR code?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! With our Pro plan, you can upload your own brand logo and place it in the center of the QR code to build brand trust and improve scan rates."
+            }
+          }
         ]
       }
     ]
@@ -373,6 +403,51 @@ export default function HomePage() {
                     </Dialog>
                   </div>
                 </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== FAQ ===== */}
+        <section id="faq" className="py-20">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 flex items-center justify-center gap-3">
+                <HelpCircle className="w-8 h-8 text-primary" />
+                Frequently Asked Questions
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Common questions about our dynamic QR code generator
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                {
+                  q: "What is a dynamic QR code?",
+                  a: "A dynamic QR code is trackable and updatable. You can change the destination link after printing, whereas static QR codes are fixed forever once created."
+                },
+                {
+                  q: "Can I use Scaniya for free?",
+                  a: "Absolutely! Our basic plan allows you to create up to 2 free dynamic QR codes with logo-support features coming soon to the free tier."
+                },
+                {
+                  q: "Are the scans limited?",
+                  a: "No, all QR codes generated on Scaniya have unlimited scans. We don't block your QR codes regardless of how many people scan them."
+                },
+                {
+                  q: "How do I track my QR code scans?",
+                  a: "Each dynamic QR code has a built-in analytics dashboard. You can see total scan counts, and Pro users get detailed charts and location data."
+                }
+              ].map((faq, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-muted/30 border border-border/50">
+                  <h3 className="font-semibold text-base mb-2">{faq.q}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-12 text-center text-sm text-muted-foreground">
+              Have more questions? Contact us at <a href="mailto:alphaprime.co.in@gmail.com" className="text-primary hover:underline">alphaprime.co.in@gmail.com</a>
             </div>
           </div>
         </section>
