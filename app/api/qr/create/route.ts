@@ -5,6 +5,7 @@ import { User } from "@/models/User";
 import { QRCode } from "@/models/QRCode";
 import { generateId } from "@/lib/nanoid";
 import { z } from "zod";
+import { headers } from "next/headers";
 
 const createSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
@@ -18,9 +19,11 @@ const createSchema = z.object({
   }),
 });
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
+  const session = await auth();
   try {
-    const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -64,7 +67,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, qrCode: newQR }, { status: 201 });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
+      return NextResponse.json({ error: error.issues[0].message }, { status: 400 });
     }
     console.error("Create QR error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

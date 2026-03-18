@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { dbConnect } from "@/lib/mongodb";
 import { User } from "@/models/User";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const session = await auth();
   try {
-    const session = await auth();
     if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     await dbConnect();

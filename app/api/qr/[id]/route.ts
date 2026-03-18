@@ -7,9 +7,15 @@ import { User } from "@/models/User";
 import { rateLimit } from "@/lib/rateLimit";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const userAgent = req.headers.get("user-agent") || "unknown";
+  const country = req.headers.get("cf-ipcountry") || undefined;
+  const { id } = params;
+
   try {
-    const ip = req.headers.get("x-forwarded-for") || "unknown";
     if (!rateLimit(ip, 60, 60 * 1000)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
@@ -26,11 +32,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     qr.scanCount += 1;
     await qr.save();
 
-    // Log the scan
-    const userAgent = req.headers.get("user-agent") || "unknown";
-    // basic country resolution from ip headers if available (e.g. cloudflare)
-    const country = req.headers.get("cf-ipcountry") || undefined;
-    
     await ScanLog.create({
       qrId: qr._id,
       userAgent,
