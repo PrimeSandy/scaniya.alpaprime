@@ -68,13 +68,25 @@ export const QRGradientPicker: React.FC<QRGradientPickerProps> = ({ value, onCha
     return () => clearTimeout(timer);
   }, [value, colors, direction, renderPreview]);
 
+  // Removed the useEffect that blindly called onChange to prevent infinite React update loops.
+  // Instead, onChange will only be manually dispatched inside user-interaction handlers.
+  
+  // Note: If you want to initialize the parent with the default gradient, do it once on mount:
   useEffect(() => {
     onChange({ direction, colors });
-  }, [direction, colors, onChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const updateDirection = (dir: "horizontal" | "vertical" | "diagonal") => {
+    setDirection(dir);
+    onChange({ direction: dir, colors });
+  };
 
   const addColor = () => {
     if (colors.length < 5) {
-      setColors([...colors, "#000000"]);
+      const newColors = [...colors, "#000000"];
+      setColors(newColors);
+      onChange({ direction, colors: newColors });
     }
   };
 
@@ -82,6 +94,7 @@ export const QRGradientPicker: React.FC<QRGradientPickerProps> = ({ value, onCha
     if (colors.length > 2) {
       const newColors = colors.filter((_, i) => i !== index);
       setColors(newColors);
+      onChange({ direction, colors: newColors });
     }
   };
 
@@ -89,6 +102,7 @@ export const QRGradientPicker: React.FC<QRGradientPickerProps> = ({ value, onCha
     const newColors = [...colors];
     newColors[index] = color;
     setColors(newColors);
+    onChange({ direction, colors: newColors });
   };
 
   const handleDownload = () => {
@@ -108,7 +122,7 @@ export const QRGradientPicker: React.FC<QRGradientPickerProps> = ({ value, onCha
             {(["horizontal", "vertical", "diagonal"] as const).map((dir) => (
               <button
                 key={dir}
-                onClick={() => setDirection(dir)}
+                onClick={() => updateDirection(dir)}
                 className={`px-3 py-1.5 rounded-lg text-sm capitalize transition-colors ${
                   direction === dir
                     ? "bg-[#00DDB4] text-black font-bold"
@@ -162,6 +176,7 @@ export const QRGradientPicker: React.FC<QRGradientPickerProps> = ({ value, onCha
                 onClick={() => {
                   setColors(preset.colors);
                   setDirection(preset.direction);
+                  onChange({ direction: preset.direction, colors: preset.colors });
                 }}
                 className="px-3 py-1 rounded-full border border-white/10 text-xs hover:border-[#00DDB4] text-white hover:text-[#00DDB4] transition-colors"
               >

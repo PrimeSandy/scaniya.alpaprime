@@ -110,8 +110,9 @@ export default function QRStylePicker({ value, onStyleChange }: QRStylePickerPro
     }
   };
 
-  const PresetCard = ({ name, type }: { name: string; type: typeof selectedPreset }) => (
+  const renderPresetCard = (name: string, type: "classic" | "rounded" | "colored" | "branded") => (
     <div
+      key={type}
       onClick={() => applyPreset(type)}
       className={cn(
         "flex flex-col items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all bg-card hover:bg-muted/50",
@@ -142,10 +143,10 @@ export default function QRStylePicker({ value, onStyleChange }: QRStylePickerPro
           {/* STYLE TAB */}
           <TabsContent value="style" className="space-y-6 mt-6">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <PresetCard name="Classic" type="classic" />
-              <PresetCard name="Rounded" type="rounded" />
-              <PresetCard name="Colored" type="colored" />
-              <PresetCard name="Branded" type="branded" />
+              {renderPresetCard("Classic", "classic")}
+              {renderPresetCard("Rounded", "rounded")}
+              {renderPresetCard("Colored", "colored")}
+              {renderPresetCard("Branded", "branded")}
             </div>
 
             <div className="grid grid-cols-3 gap-6 pt-6 border-t border-border">
