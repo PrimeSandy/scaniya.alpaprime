@@ -4,8 +4,9 @@ import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { TypeSelector, QRType } from "@/components/create/TypeSelector";
-import { DesignCustomizer } from "@/components/create/DesignCustomizer";
-import { QRPreview } from "@/components/create/QRPreview";
+import QRStylePicker, { QRFinalConfig } from "@/components/create/QRStylePicker";
+import { QRStyled, QRStyledRef } from "@/components/create/QRStyled";
+import { useRef } from "react";
 import { MultiActionBuilder, Action } from "@/components/create/MultiActionBuilder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +29,16 @@ export default function EditPage() {
   const [content, setContent] = useState<any>({});
   const [multiTitle, setMultiTitle] = useState("Choose an option");
   const [actions, setActions] = useState<Action[]>([]);
-  const [design, setDesign] = useState({ size: 300, fgColor: "#000000", bgColor: "#ffffff", logoUrl: "" });
+  const qrRef = useRef<QRStyledRef>(null);
+  const [design, setDesign] = useState({ 
+    size: 260, 
+    fgColor: "#000000", 
+    bgColor: "#ffffff", 
+    logoUrl: "",
+    dotStyle: "rounded" as const,
+    cornerStyle: "extra-rounded" as const,
+    frameStyle: "none" as const
+  });
   const [name, setName] = useState("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
@@ -53,7 +63,15 @@ export default function EditPage() {
       const data = await res.json();
       setQrType(data.type);
       setName(data.name);
-      setDesign(data.design || { size: 300, fgColor: "#000000", bgColor: "#ffffff" });
+      setDesign({ 
+        size: data.design?.size || 260, 
+        fgColor: data.design?.fgColor || "#000000", 
+        bgColor: data.design?.bgColor || "#ffffff",
+        logoUrl: data.design?.logoUrl || "",
+        dotStyle: data.design?.dotStyle || "rounded",
+        cornerStyle: data.design?.cornerStyle || "extra-rounded",
+        frameStyle: data.design?.frameStyle || "none"
+      });
       setUpdatedAt(data.updatedAt || data.createdAt);
       if (data.type === "multi") {
         setMultiTitle(data.content?.title || "Choose an option");
@@ -197,7 +215,21 @@ export default function EditPage() {
             {/* Design */}
             <Card className="p-6 border border-border/50 space-y-4">
               <h2 className="text-base font-semibold">Design</h2>
-              <DesignCustomizer design={design} onChange={setDesign} isPro={isPro} />
+              <QRStylePicker 
+                value={qrValue} 
+                onStyleChange={(config) => {
+                  setDesign({ 
+                    size: 260, 
+                    fgColor: config.fgColor, 
+                    bgColor: config.bgColor, 
+                    logoUrl: config.logo || "",
+                    dotStyle: config.dotStyle as any,
+                    cornerStyle: config.cornerStyle as any,
+                    frameStyle: config.frameStyle as any
+                  });
+                  toast({ title: "Design updated locally (Press Save Changes to persist)" });
+                }} 
+              />
             </Card>
 
             {/* Save */}
@@ -211,13 +243,19 @@ export default function EditPage() {
           <div>
             <Card className="p-6 border border-border/50 sticky top-24">
               <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
-              <QRPreview
-                value={qrValue}
-                size={Math.min(design.size, 260)}
-                fgColor={design.fgColor}
-                bgColor={design.bgColor}
-                logoUrl={design.logoUrl}
-              />
+              <div className="flex justify-center">
+                <QRStyled
+                  ref={qrRef}
+                  value={qrValue}
+                  size={Math.min(design.size, 260)}
+                  fgColor={design.fgColor}
+                  bgColor={design.bgColor}
+                  logo={design.logoUrl}
+                  dotStyle={design.dotStyle}
+                  cornerStyle={design.cornerStyle}
+                  frameStyle={design.frameStyle}
+                />
+              </div>
             </Card>
           </div>
         </div>

@@ -25,9 +25,9 @@ export function rateLimit(ip: string, limit: number, windowMs: number): boolean 
 // Memory cleanup every 5 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [key, record] of rateLimitStore.entries()) {
+  Array.from(rateLimitStore.entries()).forEach(([key, record]) => {
     if (now > record.expiresAt) {
       rateLimitStore.delete(key);
     }
-  }
+  });
 }, 5 * 60 * 1000);

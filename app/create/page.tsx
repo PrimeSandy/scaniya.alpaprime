@@ -4,8 +4,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { TypeSelector, QRType } from "@/components/create/TypeSelector";
-import { DesignCustomizer } from "@/components/create/DesignCustomizer";
-import { QRPreview, QRPreviewRef } from "@/components/create/QRPreview";
+import QRStylePicker, { QRFinalConfig } from "@/components/create/QRStylePicker";
+import { QRStyled, QRStyledRef } from "@/components/create/QRStyled";
 import { MultiActionBuilder, Action } from "@/components/create/MultiActionBuilder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ export default function CreatePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { toast } = useToast();
-  const qrRef = useRef<QRPreviewRef>(null);
+  const qrRef = useRef<QRStyledRef>(null);
 
   const [step, setStep] = useState(0);
   const [qrType, setQrType] = useState<QRType>("link");
@@ -40,7 +40,15 @@ export default function CreatePage() {
   const [actions, setActions] = useState<Action[]>([
     { label: "Visit Website", type: "link", value: "" },
   ]);
-  const [design, setDesign] = useState({ size: 300, fgColor: "#000000", bgColor: "#ffffff", logoUrl: "" });
+  const [design, setDesign] = useState({ 
+    size: 260, 
+    fgColor: "#000000", 
+    bgColor: "#ffffff", 
+    logoUrl: "",
+    dotStyle: "rounded" as const,
+    cornerStyle: "extra-rounded" as const,
+    frameStyle: "none" as const
+  });
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -88,7 +96,7 @@ export default function CreatePage() {
 
   const handleDownloadFromCreate = () => {
     if (qrRef.current) {
-      qrRef.current.download(name || "qrcode");
+      qrRef.current.downloadQR("png", 300);
     }
   };
 
@@ -130,9 +138,9 @@ export default function CreatePage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className={cn("grid gap-8", step === 1 ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3")}>
           {/* Main content area */}
-          <div className="lg:col-span-2">
+          <div className={cn(step === 1 ? "w-full" : "lg:col-span-2")}>
             <Card className="p-6 border border-border/50">
               {/* Step 1: Type */}
               {step === 0 && (
@@ -211,7 +219,22 @@ export default function CreatePage() {
                     <h2 className="text-lg font-semibold mb-1">Customize design</h2>
                     <p className="text-muted-foreground text-sm">Make your QR code visually unique</p>
                   </div>
-                  <DesignCustomizer design={design} onChange={setDesign} isPro={isPro} />
+                  <QRStylePicker 
+                    value={qrValue} 
+                    onStyleChange={(config) => {
+                      setDesign({ 
+                        size: 300, // or config derived size if needed
+                        fgColor: config.fgColor, 
+                        bgColor: config.bgColor, 
+                        logoUrl: config.logo || "",
+                        dotStyle: config.dotStyle as any,
+                        cornerStyle: config.cornerStyle as any,
+                        frameStyle: config.frameStyle as any
+                      });
+                      toast({ title: "Design settings applied!" });
+                      setStep(2); // Auto proceed
+                    }} 
+                  />
                 </div>
               )}
 
@@ -270,22 +293,27 @@ export default function CreatePage() {
             </Card>
           </div>
 
-          {/* Live Preview */}
-          <div className="lg:col-span-1">
-            <Card className="p-6 border border-border/50 sticky top-24">
-              <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
-              <div id="qr-preview-create">
-                <QRPreview
-                  ref={qrRef}
-                  value={qrValue}
-                  size={Math.min(design.size, 260)}
-                  fgColor={design.fgColor}
-                  bgColor={design.bgColor}
-                  logoUrl={design.logoUrl}
-                />
-              </div>
-            </Card>
-          </div>
+          {/* Live Preview (hidden in step 1 since QRStylePicker has its own) */}
+          {step !== 1 && (
+            <div className="lg:col-span-1">
+              <Card className="p-6 border border-border/50 sticky top-24">
+                <h3 className="text-sm font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Live Preview</h3>
+                <div className="flex justify-center">
+                  <QRStyled
+                    ref={qrRef}
+                    value={qrValue}
+                    size={Math.min(design.size, 260)}
+                    fgColor={design.fgColor}
+                    bgColor={design.bgColor}
+                    logo={design.logoUrl}
+                    dotStyle={design.dotStyle}
+                    cornerStyle={design.cornerStyle}
+                    frameStyle={design.frameStyle}
+                  />
+                </div>
+              </Card>
+            </div>
+          )}
         </div>
       </main>
     </div>
