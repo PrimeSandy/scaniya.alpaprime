@@ -19,10 +19,9 @@ export function Navbar() {
   const fetcher = (url: string) => fetch(url).then(r => r.json());
   const { data: userData, mutate } = useSWR(session?.user ? "/api/user/me" : null, fetcher);
 
-  const planLimit = userData?.plan === "pro" ? "Unlimited" : 2;
-  const qrCount = userData?.qrCount || 0;
-    const limitForDisplay = userData?.plan === "pro" ? 100 : 2;
-    const usagePercent = Math.min(100, Math.round((qrCount / limitForDisplay) * 100));
+    const storageUsage = userData?.storageUsage || 0;
+    const storageLimit = userData?.storageLimit || 100;
+    const usagePercent = Math.min(100, Math.round((storageUsage / storageLimit) * 100));
     const freePercent = 100 - usagePercent;
 
     return (
@@ -94,7 +93,7 @@ export function Navbar() {
                     <div className="mt-4 mb-2">
                       <div className="flex justify-between items-center text-[10px] mb-1.5 font-medium">
                         <span className="text-muted-foreground flex items-center gap-1">
-                          <Database className="w-3 h-3" /> Database Usage
+                          <Database className="w-3 h-3" /> Database Space
                         </span>
                         <span className={usagePercent > 80 ? "text-destructive" : "text-primary"}>
                           {usagePercent}% Used
@@ -110,6 +109,9 @@ export function Navbar() {
                         <span>{usagePercent}% Used</span>
                         <span>{freePercent}% Free</span>
                       </div>
+                      <p className="text-[8px] text-muted-foreground mt-2 italic">
+                        Usage calculated by QRs, links & comments
+                      </p>
                     </div>
                   )}
                 </div>

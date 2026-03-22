@@ -18,12 +18,32 @@ export async function GET() {
     const user = await User.findById((session.user as any).dbId || session.user.id);
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+    // Detailed Storage Calculation
+    const qrs = await QRCode.find({ userId: user._id });
+    const commentsCount = await Comment.countDocuments({ userId: user._id });
+    
+    let storageUsage = qrs.length * 10; // 10 units per QR base
+    storageUsage += commentsCount * 2;   // 2 units per Comment
+    
+    qrs.forEach(qr => {
+      if (qr.type === "multi" && qr.content?.actions) {
+        storageUsage += (qr.content.actions.length * 2); // 2 units per link
+      }
+      if (qr.type === "image" || qr.content?.url?.includes("image")) {
+        storageUsage += 5; // 5 units for image-based QRs
+      }
+    });
+
+    const storageLimit = user.plan === "pro" ? 10000 : 100;
+
     return NextResponse.json({
       name: user.name,
       email: user.email,
       image: user.image,
       plan: user.plan,
       qrCount: user.qrCount,
+      storageUsage,
+      storageLimit,
     });
   } catch (error) {
     console.error("User ME error:", error);

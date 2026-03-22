@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
+import useSWR from "swr";
 import { StatsRow } from "@/components/dashboard/StatsRow";
 import { QRCard } from "@/components/dashboard/QRCard";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -48,10 +49,16 @@ export default function DashboardPage() {
     }
   };
 
+  const fetcher = (url: string) => fetch(url).then(r => r.json());
+  const { data: userData } = useSWR(session?.user ? "/api/user/me" : null, fetcher);
+
   const plan = (session?.user as any)?.plan ?? "free";
   const totalScans = qrCodes.reduce((acc, qr) => acc + (qr.scanCount || 0), 0);
   const activeQRs = qrCodes.filter((qr) => qr.isActive).length;
-  const atLimit = plan === "free" && qrCodes.length >= 2;
+  
+  const storageUsage = userData?.storageUsage || 0;
+  const storageLimit = userData?.storageLimit || 100;
+  const atLimit = storageUsage >= storageLimit;
 
   const handleDelete = (id: string) => {
     setQrCodes((prev) => prev.filter((q) => q._id !== id));
@@ -111,7 +118,7 @@ export default function DashboardPage() {
                 <TooltipContent side="bottom" className="max-w-[200px] text-center">
                   <div className="flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Free plan limit reached. Upgrade to Pro for unlimited QR codes.</span>
+                    <span>Database storage limit reached. Remove some items or upgrade to Pro for more space.</span>
                   </div>
                 </TooltipContent>
               )}
@@ -124,9 +131,9 @@ export default function DashboardPage() {
           <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3 text-sm">
             <AlertCircle className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
             <div>
-              <p className="font-medium text-amber-600">Free plan limit reached</p>
+              <p className="font-medium text-amber-600">Database Storage Limit Reached</p>
               <p className="text-muted-foreground mt-0.5">
-                You&apos;ve used all 2 free QR codes. Upgrade to Pro for unlimited codes, logo embedding, and detailed analytics.
+                You&apos;ve reached your database storage limit for the free plan. Usage is calculated based on QR codes, comments, and links. Upgrade to Pro for significantly more space and features.
               </p>
             </div>
           </div>
