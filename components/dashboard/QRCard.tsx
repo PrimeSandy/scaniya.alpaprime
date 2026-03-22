@@ -160,8 +160,8 @@ export function QRCard({ qr, onDelete }: QRCardProps) {
             variant="ghost"
             size="icon"
             className="h-8 w-8 hover:text-indigo-500"
-            onClick={() => router.push(`/dashboard/comments/${qr.uniqueId}`)}
-            title="Comments"
+            onClick={() => window.open(scanUrl, '_blank')}
+            title="View Comments"
           >
             <MessageSquare className="w-3.5 h-3.5" />
           </Button>

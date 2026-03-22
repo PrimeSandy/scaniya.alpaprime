@@ -104,10 +104,10 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string, qrOwnerId: s
     // Optimistic update
     setComments(comments.map(c => {
       if (c._id === commentId) {
-        const hasLiked = c.likes.includes(currentUserId);
+        const hasLiked = (c.likes || []).includes(currentUserId);
         return {
           ...c,
-          likes: hasLiked ? c.likes.filter(id => id !== currentUserId) : [...c.likes, currentUserId]
+          likes: hasLiked ? (c.likes || []).filter(id => id !== currentUserId) : [...(c.likes || []), currentUserId]
         };
       }
       return c;
@@ -174,7 +174,7 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string, qrOwnerId: s
     const isOwner = comment.userId?._id === currentUserId;
     const isQRAdminContext = currentUserId === qrOwnerId;
     const isAdminOfComment = comment.userId?._id === qrOwnerId;
-    const hasLiked = currentUserId && comment.likes.includes(currentUserId);
+    const hasLiked = currentUserId && (comment.likes || []).includes(currentUserId);
 
     return (
       <div key={comment._id} className={`flex gap-3 group animate-in fade-in ${isReply ? "ml-10 mt-4" : "mt-6"}`}>
@@ -257,7 +257,7 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string, qrOwnerId: s
               }`}
             >
               <Heart className={`w-3.5 h-3.5 ${hasLiked ? "fill-rose-500" : ""}`} />
-              {comment.likes.length > 0 && comment.likes.length}
+              {(comment.likes?.length || 0) > 0 && comment.likes.length}
             </button>
             
             {!isReply && session && (
