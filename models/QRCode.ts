@@ -14,6 +14,7 @@ export interface IQRCode extends Document {
   };
   scanCount: number;
   isActive: boolean;
+  expiresAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +34,7 @@ const QRCodeSchema = new Schema(
     },
     scanCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    expiresAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

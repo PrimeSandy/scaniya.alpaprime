@@ -29,6 +29,16 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         comment.likes = comment.likes.filter((id: any) => id.toString() !== userId.toString());
       } else {
         comment.likes.push(userId);
+        comment.dislikes = comment.dislikes.filter((id: any) => id.toString() !== userId.toString());
+      }
+      await comment.save();
+    } else if (action === "dislike") {
+      const hasDisliked = comment.dislikes.some((id: any) => id.toString() === userId.toString());
+      if (hasDisliked) {
+        comment.dislikes = comment.dislikes.filter((id: any) => id.toString() !== userId.toString());
+      } else {
+        comment.dislikes.push(userId);
+        comment.likes = comment.likes.filter((id: any) => id.toString() !== userId.toString());
       }
       await comment.save();
     } else if (action === "edit") {

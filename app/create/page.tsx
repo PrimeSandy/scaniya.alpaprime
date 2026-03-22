@@ -50,6 +50,7 @@ export default function CreatePage() {
     frameStyle: "none" as const
   });
   const [name, setName] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function CreatePage() {
       const res = await fetch("/api/qr/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, type: qrType, content: finalContent, design }),
+        body: JSON.stringify({ name, type: qrType, content: finalContent, design, expiresAt: expiresAt || null }),
       });
 
       const data = await res.json();
@@ -245,14 +246,25 @@ export default function CreatePage() {
                     <h2 className="text-lg font-semibold mb-1">Preview & Save</h2>
                     <p className="text-muted-foreground text-sm">Give your QR code a name and save it</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label>QR Code Name *</Label>
-                    <Input
-                      placeholder="e.g. Marketing Campaign 2025"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">This is only visible to you in your dashboard</p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>QR Code Name *</Label>
+                      <Input
+                        placeholder="e.g. Marketing Campaign 2025"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">This is only visible to you in your dashboard</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Expiration Date & Time (Optional)</Label>
+                      <Input
+                        type="datetime-local"
+                        value={expiresAt}
+                        onChange={(e) => setExpiresAt(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">The QR code will become inactive after this time</p>
+                    </div>
                   </div>
                   <div className="flex gap-3 pt-4">
                     <Button

@@ -55,6 +55,7 @@ const updateSchema = z.object({
     bgColor: z.string().default("#ffffff"),
     logoUrl: z.string().optional(),
   }).optional(),
+  expiresAt: z.string().optional().nullable(),
 });
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
@@ -87,7 +88,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     //   validatedData.design.logoUrl = undefined;
     // }
 
-    Object.assign(qr, validatedData);
+    const updates = { ...validatedData };
+    if ('expiresAt' in updates) {
+      (updates as any).expiresAt = updates.expiresAt ? new Date(updates.expiresAt) : null;
+    }
+
+    Object.assign(qr, updates);
     
     // Mongoose needs explicit notification for Mixed types or nested objects
     // modified via Object.assign to guarantee they are saved correctly.

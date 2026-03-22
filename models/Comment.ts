@@ -5,6 +5,7 @@ export interface IComment extends Document {
   userId: mongoose.Types.ObjectId;
   text: string;
   likes: mongoose.Types.ObjectId[];
+  dislikes: mongoose.Types.ObjectId[];
   parentId: mongoose.Types.ObjectId | null;
   isEdited: boolean;
   editCount: number;
@@ -18,6 +19,7 @@ const CommentSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     text: { type: String, required: true },
     likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    dislikes: [{ type: Schema.Types.ObjectId, ref: "User" }],
     parentId: { type: Schema.Types.ObjectId, ref: "Comment", default: null },
     isEdited: { type: Boolean, default: false },
     editCount: { type: Number, default: 0 },

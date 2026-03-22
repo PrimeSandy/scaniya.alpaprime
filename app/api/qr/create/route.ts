@@ -17,6 +17,7 @@ const createSchema = z.object({
     bgColor: z.string().default("#ffffff"),
     logoUrl: z.string().optional(),
   }),
+  expiresAt: z.string().optional().nullable(),
 });
 
 export const dynamic = "force-dynamic";
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
       type: validatedData.type,
       content: validatedData.content,
       design: validatedData.design,
+      expiresAt: validatedData.expiresAt ? new Date(validatedData.expiresAt) : null,
     });
 
     user.qrCount += 1;

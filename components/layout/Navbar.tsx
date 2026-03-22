@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { QrCode, LayoutDashboard, Plus, LogOut, User } from "lucide-react";
+import useSWR from "swr";
+import { QrCode, LayoutDashboard, Plus, LogOut, User, Trash2, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +16,12 @@ import { PlanBadge } from "@/components/shared/PlanBadge";
 
 export function Navbar() {
   const { data: session } = useSession();
+  const fetcher = (url: string) => fetch(url).then(r => r.json());
+  const { data: userData, mutate } = useSWR(session?.user ? "/api/user/me" : null, fetcher);
+
+  const planLimit = userData?.plan === "pro" ? "Unlimited" : 2;
+  const qrCount = userData?.qrCount || 0;
+  const usagePercent = planLimit === "Unlimited" ? 0 : Math.min(100, Math.round((qrCount / 2) * 100));
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
@@ -62,7 +69,10 @@ export function Navbar() {
         {session?.user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary" aria-label="Open User Menu">
+              <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary px-2 py-1 hover:bg-muted transition-colors" aria-label="Open User Menu">
+                <span className="text-sm font-medium hidden sm:inline-block text-foreground">
+                  {session.user.name?.split(" ")[0]}
+                </span>
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={session.user.image ?? ""} alt={session.user.name ?? ""} />
                   <AvatarFallback className="gradient-primary text-white text-xs font-bold">
@@ -78,6 +88,24 @@ export function Navbar() {
                 <div className="mt-1">
                   <PlanBadge plan={(session.user as any).plan ?? "free"} />
                 </div>
+                {userData && (
+                  <div className="mt-4 mb-2">
+                    <div className="flex justify-between items-center text-xs mb-1.5">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Database className="w-3 h-3" /> Storage
+                      </span>
+                      <span className="font-semibold">{qrCount} / {planLimit}</span>
+                    </div>
+                    {planLimit !== "Unlimited" && (
+                      <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all ${usagePercent >= 100 ? 'bg-destructive' : 'gradient-primary'}`} 
+                          style={{ width: `${usagePercent}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
@@ -87,6 +115,21 @@ export function Navbar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive cursor-pointer flex items-center gap-2"
+                onClick={async () => {
+                  if (confirm("Are you sure you want to delete ALL your QR codes? This will erase all generated data, links, and comments. This cannot be undone!")) {
+                    const res = await fetch("/api/user/me", { method: "DELETE" });
+                    if (res.ok) {
+                      mutate();
+                      window.location.href = "/dashboard";
+                    }
+                  }
+                }}
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear All Data
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive cursor-pointer flex items-center gap-2"
                 onClick={() => signOut({ callbackUrl: "/" })}
