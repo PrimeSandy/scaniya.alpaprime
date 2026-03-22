@@ -48,6 +48,7 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string; qrOwnerId: s
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [expandedReplies, setExpandedReplies] = useState<Record<string, boolean>>({});
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "popular">("newest");
   const pathname = usePathname();
 
   // SWR for live refresh every 5 seconds
@@ -184,7 +185,15 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string; qrOwnerId: s
   };
 
   // Group root comments and replies
-  const rootComments = comments.filter(c => !c.parentId);
+  const rootComments = comments
+    .filter(c => !c.parentId)
+    .sort((a, b) => {
+      if (sortBy === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      if (sortBy === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (sortBy === "popular") return (b.likes?.length || 0) - (a.likes?.length || 0);
+      return 0;
+    });
+
   const getReplies = (parentId: string) => comments.filter(c => c.parentId === parentId).reverse(); 
 
   const toggleReplies = (commentId: string) => {
@@ -359,6 +368,27 @@ export function CommentSection({ qrId, qrOwnerId }: { qrId: string; qrOwnerId: s
             Comments <span className="text-zinc-400 font-medium text-lg">({comments.length})</span>
           </h3>
         </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2 rounded-xl text-xs sm:text-sm">
+              <span className="text-zinc-500 font-normal hidden sm:inline">Sort:</span>
+              <span className="capitalize">{sortBy}</span>
+              <ChevronDown className="w-4 h-4 text-zinc-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="rounded-xl p-1.5 w-40">
+            <DropdownMenuItem onClick={() => setSortBy("newest")} className="rounded-lg py-2">
+              Newest First
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSortBy("oldest")} className="rounded-lg py-2">
+              Oldest First
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSortBy("popular")} className="rounded-lg py-2">
+              Most Popular
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {status === "loading" ? (

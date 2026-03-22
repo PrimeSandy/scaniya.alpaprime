@@ -55,7 +55,6 @@ const updateSchema = z.object({
     bgColor: z.string().default("#ffffff"),
     logoUrl: z.string().optional(),
   }).optional(),
-  expiresAt: z.string().optional().nullable(),
 });
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
@@ -89,9 +88,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     // }
 
     const updates = { ...validatedData };
-    if ('expiresAt' in updates) {
-      (updates as any).expiresAt = updates.expiresAt ? new Date(updates.expiresAt) : null;
-    }
 
     Object.assign(qr, updates);
     

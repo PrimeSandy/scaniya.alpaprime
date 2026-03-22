@@ -40,7 +40,6 @@ export default function EditPage() {
     frameStyle: "none" as const
   });
   const [name, setName] = useState("");
-  const [expiresAt, setExpiresAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
   useEffect(() => {
@@ -73,9 +72,6 @@ export default function EditPage() {
         cornerStyle: data.design?.cornerStyle || "extra-rounded",
         frameStyle: data.design?.frameStyle || "none"
       });
-      if (data.expiresAt) {
-        setExpiresAt(new Date(data.expiresAt).toISOString().slice(0, 16));
-      }
       setUpdatedAt(data.updatedAt || data.createdAt);
       if (data.type === "multi") {
         setMultiTitle(data.content?.title || "Choose an option");
@@ -130,7 +126,7 @@ export default function EditPage() {
       const res = await fetch(`/api/qr/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, type: qrType, content: finalContent, design, expiresAt: expiresAt || null }),
+        body: JSON.stringify({ name, type: qrType, content: finalContent, design }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -195,11 +191,6 @@ export default function EditPage() {
                 <div className="space-y-2">
                   <Label>Name</Label>
                   <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Marketing Campaign" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Expiration Date & Time (Optional)</Label>
-                  <Input type="datetime-local" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
-                  <p className="text-xs text-muted-foreground">The QR code will become inactive after this time</p>
                 </div>
               </div>
             </Card>
