@@ -62,7 +62,26 @@ export default function CreatePage() {
 
   const qrValue = typeof window !== "undefined" ? getQRValue(qrType, qrType === "multi" ? { title: multiTitle, actions } : content) : "https://scaniya.alphaprime.co.in";
 
+  const validateContent = () => {
+    if (qrType === "link" && !content.url?.trim()) return "Please enter a destination URL";
+    if (qrType === "text" && !content.body?.trim()) return "Please enter a message";
+    if (qrType === "image" && !content.url?.trim()) return "Please enter an image URL";
+    if (qrType === "multi") {
+      if (!multiTitle?.trim()) return "Please enter a title for the multi-link page";
+      if (!actions || actions.length === 0) return "Please add at least one link/action";
+      if (actions.some((a: Action) => !a.value?.trim() || !a.label?.trim())) return "Please fill in all action labels and URLs";
+    }
+    return null;
+  };
+
   const handleSave = async () => {
+    const error = validateContent();
+    if (error) {
+      toast({ title: error, variant: "destructive", description: "Please go back to Step 1 to fix this." });
+      setStep(0);
+      return;
+    }
+
     if (!name.trim()) {
       toast({ title: "Please enter a name for your QR code", variant: "destructive" });
       return;
@@ -295,7 +314,16 @@ export default function CreatePage() {
                 </Button>
                 {step < STEPS.length - 1 && (
                   <Button
-                    onClick={() => setStep((s) => s + 1)}
+                    onClick={() => {
+                      if (step === 0) {
+                        const error = validateContent();
+                        if (error) {
+                          toast({ title: error, variant: "destructive" });
+                          return;
+                        }
+                      }
+                      setStep((s) => s + 1);
+                    }}
                     className="gradient-primary text-white border-0 gap-2"
                   >
                     Next <ArrowRight className="w-4 h-4" />

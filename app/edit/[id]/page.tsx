@@ -100,7 +100,25 @@ export default function EditPage() {
     return "https://scaniya.alphaprime.co.in";
   })();
 
+  const validateContent = () => {
+    if (qrType === "link" && !content.url?.trim()) return "Please enter a destination URL";
+    if (qrType === "text" && !content.body?.trim()) return "Please enter a message";
+    if (qrType === "image" && !content.url?.trim()) return "Please enter an image URL";
+    if (qrType === "multi") {
+      if (!multiTitle?.trim()) return "Please enter a title for the multi-link page";
+      if (!actions || actions.length === 0) return "Please add at least one link/action";
+      if (actions.some((a: Action) => !a.value?.trim() || !a.label?.trim())) return "Please fill in all action labels and URLs";
+    }
+    return null;
+  };
+
   const handleSave = async () => {
+    const error = validateContent();
+    if (error) {
+      toast({ title: error, variant: "destructive", description: "Check your content items." });
+      return;
+    }
+
     if (!name.trim()) {
       toast({ title: "Please enter a name", variant: "destructive" });
       return;
