@@ -18,6 +18,7 @@ import {
   FileText,
   Image as ImageIcon,
   LayoutGrid,
+  MessageSquare,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -154,6 +155,15 @@ export function QRCard({ qr, onDelete }: QRCardProps) {
             title="Edit"
           >
             <Edit3 className="w-3.5 h-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 hover:text-indigo-500"
+            onClick={() => router.push(`/dashboard/comments/${qr.uniqueId}`)}
+            title="Comments"
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
           </Button>
           <Button
             variant="ghost"

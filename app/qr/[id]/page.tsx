@@ -95,7 +95,10 @@ export default async function ScanPage({
         {content}
       </div>
       <div className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950">
-        <CommentSection qrId={qr._id.toString()} />
+        <CommentSection 
+          qrId={qr._id.toString()} 
+          qrOwnerId={qr.userId.toString()} 
+        />
       </div>
     </div>
   );

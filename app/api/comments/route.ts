@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { qrId, text } = await req.json();
+    const { qrId, text, parentId } = await req.json();
 
     if (!qrId || !text) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -56,6 +56,7 @@ export async function POST(req: Request) {
       qrId,
       userId,
       text,
+      parentId: parentId || null,
     });
 
     const populatedComment = await Comment.findById(newComment._id)
