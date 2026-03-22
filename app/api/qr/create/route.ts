@@ -45,6 +45,33 @@ export async function POST(req: Request) {
     const payload = await req.json();
     const validatedData = createSchema.parse(payload);
 
+    // Strict URL Validation
+    const isValidUrl = (url: string) => {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === "http:" || parsed.protocol === "https:";
+      } catch {
+        return false;
+      }
+    };
+
+    if (validatedData.type === "link") {
+      if (!validatedData.content.url || !isValidUrl(validatedData.content.url)) {
+        return NextResponse.json({ error: "Invalid destination URL" }, { status: 400 });
+      }
+    } else if (validatedData.type === "image") {
+      if (!validatedData.content.url || !isValidUrl(validatedData.content.url)) {
+        return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
+      }
+    } else if (validatedData.type === "multi") {
+      const actions = validatedData.content.actions || [];
+      for (const action of actions) {
+        if (!action.value || !isValidUrl(action.value)) {
+          return NextResponse.json({ error: `Invalid URL for ${action.label || 'Action'}` }, { status: 400 });
+        }
+      }
+    }
+
     // If free plan, remove logo if any provided (Currently allowing for all)
     // if (user.plan === "free" && validatedData.design.logoUrl) {
     //   validatedData.design.logoUrl = undefined;

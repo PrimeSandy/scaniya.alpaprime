@@ -17,6 +17,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Save, Clock } from "lucide-react";
 
+const isValidUrl = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
 export default function EditPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -97,13 +106,22 @@ export default function EditPage() {
   })();
 
   const validateContent = () => {
-    if (qrType === "link" && !content.url?.trim()) return "Please enter a destination URL";
+    if (qrType === "link") {
+      if (!content.url?.trim()) return "Please enter a destination URL";
+      if (!isValidUrl(content.url)) return "Please enter a valid URL (e.g. https://google.com)";
+    }
     if (qrType === "text" && !content.body?.trim()) return "Please enter a message";
-    if (qrType === "image" && !content.url?.trim()) return "Please enter an image URL";
+    if (qrType === "image") {
+      if (!content.url?.trim()) return "Please enter an image URL";
+      if (!isValidUrl(content.url)) return "Please enter a valid image URL";
+    }
     if (qrType === "multi") {
       if (!multiTitle?.trim()) return "Please enter a title for the multi-link page";
       if (!actions || actions.length === 0) return "Please add at least one link/action";
-      if (actions.some((a: Action) => !a.value?.trim() || !a.label?.trim())) return "Please fill in all action labels and URLs";
+      for (const action of actions) {
+        if (!action.label?.trim() || !action.value?.trim()) return "Please fill in all action labels and URLs";
+        if (!isValidUrl(action.value)) return `Invalid URL for "${action.label}": ${action.value}`;
+      }
     }
     return null;
   };

@@ -82,6 +82,32 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     const body = await req.json();
     const validatedData = updateSchema.parse(body);
 
+    // Strict URL Validation
+    const isValidUrl = (url: string) => {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === "http:" || parsed.protocol === "https:";
+      } catch {
+        return false;
+      }
+    };
+
+    if (validatedData.type === "link" && validatedData.content?.url) {
+      if (!isValidUrl(validatedData.content.url)) {
+        return NextResponse.json({ error: "Invalid destination URL" }, { status: 400 });
+      }
+    } else if (validatedData.type === "image" && validatedData.content?.url) {
+      if (!isValidUrl(validatedData.content.url)) {
+        return NextResponse.json({ error: "Invalid image URL" }, { status: 400 });
+      }
+    } else if (validatedData.type === "multi" && validatedData.content?.actions) {
+      for (const action of validatedData.content.actions) {
+        if (action.value && !isValidUrl(action.value)) {
+          return NextResponse.json({ error: `Invalid URL for ${action.label || 'Action'}` }, { status: 400 });
+        }
+      }
+    }
+
     // Removed restriction initially locking logoUrl to Pro plan
     // if (user.plan === "free" && validatedData.design?.logoUrl) {
     //   validatedData.design.logoUrl = undefined;
