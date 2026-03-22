@@ -1,8 +1,14 @@
+/**
+ * @author Santhosh Ravi
+ * @brand AlphaPrime
+ * @site alphaprime.co.in
+ */
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
+import { DevSignature } from "@/components/layout/DevSignature";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -75,12 +81,18 @@ export const metadata: Metadata = {
   verification: {
     google: "YOUR_GOOGLE_SITE_VERIFICATION_PLACEHOLDER",
   },
+  other: {
+    developer: "Santhosh Ravi",
+    brand: "AlphaPrime",
+    site: "alphaprime.co.in",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
+        <DevSignature />
         <Providers>
           {children}
           <Toaster />
