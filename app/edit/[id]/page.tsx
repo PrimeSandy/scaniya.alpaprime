@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Loader2, Save, Clock } from "lucide-react";
+import { ArrowLeft, Loader2, Save, Clock, X } from "lucide-react";
 
 const isValidUrl = (url: string) => {
   try {
@@ -208,7 +208,24 @@ export default function EditPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>Name</Label>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Marketing Campaign" />
+                  <div className="relative group/input">
+                    <Input 
+                      value={name} 
+                      onChange={(e) => setName(e.target.value)} 
+                      placeholder="e.g. Marketing Campaign" 
+                      className="pr-10 rounded-xl"
+                    />
+                    {name && (
+                      <button
+                        type="button"
+                        onClick={() => setName("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                        aria-label="Clear Name"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </Card>
@@ -223,7 +240,25 @@ export default function EditPage() {
                 {qrType === "link" && (
                   <div className="space-y-2">
                     <Label>Destination URL</Label>
-                    <Input type="url" placeholder="https://example.com" value={content.url || ""} onChange={(e) => setContent({ ...content, url: e.target.value })} />
+                    <div className="relative group/input">
+                      <Input
+                        type="url"
+                        placeholder="https://example.com"
+                        className="pr-10 rounded-xl"
+                        value={content.url || ""}
+                        onChange={(e) => setContent({ ...content, url: e.target.value })}
+                      />
+                      {content.url && (
+                        <button
+                          type="button"
+                          onClick={() => setContent({ ...content, url: "" })}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                          aria-label="Clear URL"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
                 {qrType === "text" && (
@@ -236,11 +271,46 @@ export default function EditPage() {
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Image URL</Label>
-                      <Input type="url" placeholder="https://..." value={content.url || ""} onChange={(e) => setContent({ ...content, url: e.target.value })} />
+                      <div className="relative group/input">
+                        <Input
+                          type="url"
+                          placeholder="https://..."
+                          className="pr-10 rounded-xl"
+                          value={content.url || ""}
+                          onChange={(e) => setContent({ ...content, url: e.target.value })}
+                        />
+                        {content.url && (
+                          <button
+                            type="button"
+                            onClick={() => setContent({ ...content, url: "" })}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                            aria-label="Clear Image URL"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Caption (optional)</Label>
-                      <Input placeholder="Caption" value={content.caption || ""} onChange={(e) => setContent({ ...content, caption: e.target.value })} />
+                      <div className="relative group/input">
+                        <Input
+                          placeholder="Caption"
+                          className="pr-10 rounded-xl"
+                          value={content.caption || ""}
+                          onChange={(e) => setContent({ ...content, caption: e.target.value })}
+                        />
+                        {content.caption && (
+                          <button
+                            type="button"
+                            onClick={() => setContent({ ...content, caption: "" })}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                            aria-label="Clear Caption"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

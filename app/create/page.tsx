@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Loader2, Download, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Download, Save, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = ["Type", "Design", "Preview & Save"];
@@ -194,12 +194,25 @@ export default function CreatePage() {
                     {qrType === "link" && (
                       <div className="space-y-2">
                         <Label>Destination URL</Label>
-                        <Input
-                          type="url"
-                          placeholder="https://example.com"
-                          value={content.url || ""}
-                          onChange={(e) => setContent({ url: e.target.value })}
-                        />
+                        <div className="relative group/input">
+                          <Input
+                            type="url"
+                            placeholder="https://example.com"
+                            className="pr-10 rounded-xl"
+                            value={content.url || ""}
+                            onChange={(e) => setContent({ url: e.target.value })}
+                          />
+                          {content.url && (
+                            <button
+                              type="button"
+                              onClick={() => setContent({ ...content, url: "" })}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                              aria-label="Clear URL"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     )}
                     {qrType === "text" && (
@@ -217,20 +230,46 @@ export default function CreatePage() {
                       <div className="space-y-4">
                         <div className="space-y-2">
                           <Label>Image URL</Label>
-                          <Input
-                            type="url"
-                            placeholder="https://example.com/photo.jpg"
-                            value={content.url || ""}
-                            onChange={(e) => setContent({ ...content, url: e.target.value })}
-                          />
+                          <div className="relative group/input">
+                            <Input
+                              type="url"
+                              placeholder="https://example.com/photo.jpg"
+                              className="pr-10 rounded-xl"
+                              value={content.url || ""}
+                              onChange={(e) => setContent({ ...content, url: e.target.value })}
+                            />
+                            {content.url && (
+                              <button
+                                type="button"
+                                onClick={() => setContent({ ...content, url: "" })}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                                aria-label="Clear Image URL"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <div className="space-y-2">
                           <Label>Caption (optional)</Label>
-                          <Input
-                            placeholder="A short description"
-                            value={content.caption || ""}
-                            onChange={(e) => setContent({ ...content, caption: e.target.value })}
-                          />
+                          <div className="relative group/input">
+                            <Input
+                              placeholder="A short description"
+                              className="pr-10 rounded-xl"
+                              value={content.caption || ""}
+                              onChange={(e) => setContent({ ...content, caption: e.target.value })}
+                            />
+                            {content.caption && (
+                              <button
+                                type="button"
+                                onClick={() => setContent({ ...content, caption: "" })}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                                aria-label="Clear Caption"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         {content.url && (
                           <img src={content.url} alt="preview" className="rounded-lg max-h-32 object-cover" onError={(e: any) => (e.target.style.display = "none")} />
@@ -284,11 +323,24 @@ export default function CreatePage() {
                   </div>
                   <div className="space-y-2">
                     <Label>QR Code Name *</Label>
-                    <Input
-                      placeholder="e.g. Marketing Campaign 2025"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
+                    <div className="relative group/input">
+                      <Input
+                        placeholder="e.g. Marketing Campaign 2025"
+                        className="pr-10 rounded-xl"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                      {name && (
+                        <button
+                          type="button"
+                          onClick={() => setName("")}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-muted text-muted-foreground transition-colors"
+                          aria-label="Clear Name"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                     <p className="text-xs text-muted-foreground">This is only visible to you in your dashboard</p>
                   </div>
                   <div className="flex gap-3 pt-4">
