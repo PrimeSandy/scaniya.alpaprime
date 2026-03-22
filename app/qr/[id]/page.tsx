@@ -7,6 +7,8 @@ import { ScanLog } from "@/models/ScanLog";
 import { TextPage } from "@/components/scan/TextPage";
 import { ImagePage } from "@/components/scan/ImagePage";
 import { MultiPage } from "@/components/scan/MultiPage";
+import { LinkPage } from "@/components/scan/LinkPage";
+import { CommentSection } from "@/components/scan/CommentSection";
 
 export const dynamic = "force-dynamic";
 
@@ -59,35 +61,42 @@ export default async function ScanPage({
   })();
 
   // Render based on type
+  let content;
+
   if (qr.type === "link") {
     const url = qr.content?.url;
     if (!url) notFound();
-    redirect(url);
-  }
-
-  if (qr.type === "text") {
-    return <TextPage body={qr.content?.body || ""} qrName={qr.name} />;
-  }
-
-  if (qr.type === "image") {
-    return (
+    content = <LinkPage url={url} qrName={qr.name} />;
+  } else if (qr.type === "text") {
+    content = <TextPage body={qr.content?.body || ""} qrName={qr.name} />;
+  } else if (qr.type === "image") {
+    content = (
       <ImagePage
         url={qr.content?.url || ""}
         caption={qr.content?.caption}
         qrName={qr.name}
       />
     );
-  }
-
-  if (qr.type === "multi") {
-    return (
+  } else if (qr.type === "multi") {
+    content = (
       <MultiPage
         title={qr.content?.title || "Choose an option"}
         actions={qr.content?.actions || []}
         qrName={qr.name}
       />
     );
+  } else {
+    notFound();
   }
 
-  notFound();
+  return (
+    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex-none">
+        {content}
+      </div>
+      <div className="flex-1 w-full bg-zinc-50 dark:bg-zinc-950">
+        <CommentSection qrId={qr._id.toString()} />
+      </div>
+    </div>
+  );
 }
