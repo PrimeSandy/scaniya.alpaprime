@@ -1,3 +1,9 @@
+Alpha QR — QR Platform
+An independently developed QR platform providing multiple QR-based workflows through a centralized application.
+
+Status: Earlier public version of the ongoing Alpha QR project.
+
+
 # Scaniya — Dynamic QR Code Platform
 
 Scaniya is a production-ready SaaS application for creating, customizing, and tracking dynamic QR codes. One Scan, Infinite Possibilities.
